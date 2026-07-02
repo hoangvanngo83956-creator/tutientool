@@ -73,6 +73,13 @@ export default async function NovelDetailPage({ params }: NovelDetailPageProps) 
                 <FileText className="h-4 w-4" />
                 Script Library
               </Link>
+              <Link
+                href={`/novels/${novel.id}/youtube-studio`}
+                className="inline-flex h-10 items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 text-sm font-semibold text-red-700 hover:border-red-500 hover:bg-red-100"
+              >
+                <Youtube className="h-4 w-4" />
+                YouTube Studio
+              </Link>
             </div>
           </div>
           <div className="grid gap-2 text-sm text-zinc-600 sm:grid-cols-3 lg:min-w-[520px]">

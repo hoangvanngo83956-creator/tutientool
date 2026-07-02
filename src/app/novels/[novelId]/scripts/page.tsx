@@ -1,4 +1,5 @@
 ﻿import Link from "next/link";
+import { Youtube } from "lucide-react";
 import { DatabaseSetupNotice } from "@/components/database-setup-notice";
 import { ScriptLibrary } from "@/components/scripts/script-library";
 import { listVideoScripts } from "@/lib/module4-data";
