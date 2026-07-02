@@ -20,7 +20,7 @@ export async function POST(request: Request, { params }: RouteProps) {
     const sourceType = body.source_type || "chunks";
     const rawSource = sourceType === "research_notes"
       ? await fetchResearchNotesForAI(novelId, 300)
-      : await fetchChunksForAI({ novelId, chapterStart: body.chapter_start, chapterEnd: body.chapter_end, limit: 2000 });
+      : await fetchChunksForAI({ novelId, chapterStart: body.chapter_start, chapterEnd: body.chapter_end, limit: 300 });
 
     const chunks = rawSource.map((item: any, index: number) => ({
       id: item.chunk_id || item.id,
