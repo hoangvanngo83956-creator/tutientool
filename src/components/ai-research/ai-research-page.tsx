@@ -14,6 +14,7 @@ export function AIResearchPage({ novelId }: { novelId: string }) {
   const [entityType, setEntityType] = useState<EntityType | "all">("all");
   const [status, setStatus] = useState<string>("Sẵn sàng chạy AI Research.");
   const [warnings, setWarnings] = useState<string[]>([]);
+  const [stats, setStats] = useState<{ analyzedChunks?: number; batchCount?: number } | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function runResearch() {
@@ -31,7 +32,7 @@ export function AIResearchPage({ novelId }: { novelId: string }) {
           source_type: sourceType
         })
       });
-      const payload = (await response.json()) as { extracted_entities_count?: number; research_job_id?: string; warnings?: string[]; error?: string };
+      const payload = (await response.json()) as { extracted_entities_count?: number; analyzed_chunks_count?: number; batch_count?: number; research_job_id?: string; warnings?: string[]; error?: string };
       if (!response.ok) {
         setStatus(payload.error || "AI Research thất bại.");
         return;
@@ -59,7 +60,7 @@ export function AIResearchPage({ novelId }: { novelId: string }) {
             View Entity Explorer
           </Link>
         </div>
-        <ResearchJobStatus status={status} loading={isPending} warnings={warnings} />
+        <ResearchJobStatus status={status} loading={isPending} warnings={warnings} stats={stats} />
       </section>
     </div>
   );
@@ -70,5 +71,7 @@ export function ResearchScopeSelector(props: { chapterStart: string; chapterEnd:
 }
 export function EntityTypeSelector({ value, onChange }: { value: EntityType | "all"; onChange: (v: EntityType | "all") => void }) { return <select className="h-10 w-full rounded-md border border-line px-3 text-sm" value={value} onChange={(e) => onChange(e.target.value as any)}>{["all", ...ENTITY_TYPES].map((type) => <option key={type} value={type}>{LABELS[type]}</option>)}</select>; }
 export function RunResearchButton({ loading, onClick }: { loading: boolean; onClick: () => void }) { return <button type="button" onClick={onClick} disabled={loading} className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-jade-700 px-4 text-sm font-semibold text-white hover:bg-jade-800 disabled:bg-zinc-300">{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Brain className="h-4 w-4" />}Run AI Research</button>; }
-export function ResearchJobStatus({ status, loading, warnings }: { status: string; loading: boolean; warnings: string[] }) { return <div className="mt-5 space-y-4"><div className="rounded-lg border border-line bg-zinc-50 p-4 text-sm text-zinc-700">{loading ? <Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> : null}{status}</div>{warnings.length > 0 ? <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"><p className="font-semibold">Warnings</p><ul className="mt-2 list-disc pl-5">{warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div> : null}</div>; }
+export function ResearchJobStatus({ status, loading, warnings, stats }: { status: string; loading: boolean; warnings: string[]; stats: { analyzedChunks?: number; batchCount?: number } | null }) {
+  return <div className="mt-5 space-y-4"><div className="rounded-lg border border-line bg-zinc-50 p-4 text-sm text-zinc-700">{loading ? <Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> : null}{status}</div>{stats ? <div className="grid gap-3 sm:grid-cols-2"><div className="rounded-lg border border-line bg-white p-4"><p className="text-xs font-semibold uppercase text-zinc-500">Chunks ?? ph?n t?ch</p><p className="mt-1 text-2xl font-semibold text-ink">{stats.analyzedChunks ?? 0}</p></div><div className="rounded-lg border border-line bg-white p-4"><p className="text-xs font-semibold uppercase text-zinc-500">S? batch AI</p><p className="mt-1 text-2xl font-semibold text-ink">{stats.batchCount ?? 0}</p></div></div> : null}{warnings.length > 0 ? <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"><p className="font-semibold">Warnings</p><ul className="mt-2 list-disc pl-5">{warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div> : null}</div>;
+}
 export function ExtractedEntityCard() { return null; }
