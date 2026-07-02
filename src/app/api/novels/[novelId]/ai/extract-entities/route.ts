@@ -19,8 +19,8 @@ export async function POST(request: Request, { params }: RouteProps) {
     const entityTypes = normalizeEntityTypes(body.entity_types);
     const sourceType = body.source_type || "chunks";
     const rawSource = sourceType === "research_notes"
-      ? await fetchResearchNotesForAI(novelId, 30)
-      : await fetchChunksForAI({ novelId, chapterStart: body.chapter_start, chapterEnd: body.chapter_end, limit: 30 });
+      ? await fetchResearchNotesForAI(novelId, 300)
+      : await fetchChunksForAI({ novelId, chapterStart: body.chapter_start, chapterEnd: body.chapter_end, limit: 2000 });
 
     const chunks = rawSource.map((item: any, index: number) => ({
       id: item.chunk_id || item.id,
@@ -52,4 +52,12 @@ export async function POST(request: Request, { params }: RouteProps) {
 function normalizeEntityTypes(value: EntityType[] | "all" | undefined) {
   if (value === "all" || !value || value.length === 0) return "all" as const;
   return value.filter((item) => ENTITY_TYPES.includes(item));
+}
+
+function chunkArray<T>(items: T[], size: number) {
+  const batches: T[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    batches.push(items.slice(index, index + size));
+  }
+  return batches;
 }
