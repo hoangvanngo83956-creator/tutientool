@@ -1,0 +1,1 @@
+﻿export function buildYouTubeUploadChecklistPrompt(input:any){return `Tạo upload checklist YouTube. INPUT:${JSON.stringify(input).slice(0,16000)} OUTPUT:{"overall_status":"ready | needs_review | blocked","checklist":[{"category":"Content","item":"Script đã fact-check","status":"passed | warning | failed","note":""}],"warnings":[],"blocking_issues":[]}`;}

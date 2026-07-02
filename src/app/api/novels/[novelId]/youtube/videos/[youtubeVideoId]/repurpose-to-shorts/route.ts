@@ -1,0 +1,2 @@
+﻿import { NextResponse } from "next/server"; import { repurposeToShorts } from "@/lib/module6-data";
+export const runtime="nodejs"; type P={params:Promise<{novelId:string;youtubeVideoId:string}>}; export async function POST(r:Request,{params}:P){const{novelId,youtubeVideoId}=await params;return NextResponse.json(await repurposeToShorts(novelId,youtubeVideoId,await r.json().catch(()=>({number_of_shorts:5,duration_seconds:60}))));}

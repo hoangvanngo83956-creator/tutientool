@@ -1,0 +1,1 @@
+﻿export function buildYouTubeFactCheckPrompt(input:any){return `Fact check YouTube package theo evidence: content, SEO, visual, copyright. INPUT:${JSON.stringify(input).slice(0,26000)} OUTPUT:{"overall_status":"passed | needs_review | failed","content_check":[],"seo_check":[],"visual_check":[],"copyright_check":[],"warnings":[],"suggested_fixes":[]}`;}

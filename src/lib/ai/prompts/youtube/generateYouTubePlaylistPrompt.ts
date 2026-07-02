@@ -1,0 +1,1 @@
+﻿export function buildGenerateYouTubePlaylistPrompt(input:any){return `Tạo playlist YouTube dựa trên dữ liệu có evidence, không bịa. INPUT:${JSON.stringify(input).slice(0,18000)} OUTPUT:{"playlists":[{"title":"","description":"","playlist_type":"lore_playlist","target_audience":"newbie","video_order_strategy":"beginner_to_advanced","video_order":[],"warnings":[]}]}`;}

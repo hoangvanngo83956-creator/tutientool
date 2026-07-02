@@ -1,0 +1,1 @@
+﻿export function buildGenerateYouTubeChaptersPrompt(input:any){return `Generate YouTube chapters JSON from script. INPUT:${JSON.stringify(input).slice(0,16000)} OUTPUT:{"chapters":[{"timestamp":"00:00","title":"Mở đầu"}]}`;}

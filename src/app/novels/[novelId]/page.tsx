@@ -1,6 +1,6 @@
 ﻿import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BookOpen, Brain, CalendarDays, Database, FileText, NotebookPen, Search, Sparkles, UserRound, KanbanSquare } from "lucide-react";
+import { BookOpen, Brain, CalendarDays, Database, FileText, NotebookPen, Search, Sparkles, UserRound, KanbanSquare, Youtube } from "lucide-react";
 import { ChapterList } from "@/components/chapter-list";
 import { getNovelWithChapters } from "@/lib/data";
 import { formatDateTime, formatNumber } from "@/lib/format";
@@ -109,4 +109,5 @@ function MetaItem({
     </div>
   );
 }
+
 
