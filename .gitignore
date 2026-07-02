@@ -1,0 +1,26 @@
+﻿# dependencies
+node_modules/
+
+# next
+.next/
+out/
+build/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# local samples/cache
+.DS_Store
+Thumbs.db
