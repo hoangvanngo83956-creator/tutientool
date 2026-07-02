@@ -45,7 +45,8 @@ export default async function NovelDetailPage({ params }: NovelDetailPageProps) 
               >
                 <NotebookPen className="h-4 w-4" />
                 Research Notes
-              </Link>              <Link
+              </Link>
+              <Link
                 href={`/novels/${novel.id}/ai-research`}
                 className="inline-flex h-10 items-center gap-2 rounded-md border border-line px-3 text-sm font-semibold text-ink hover:border-jade-700 hover:text-jade-700"
               >
@@ -58,6 +59,13 @@ export default async function NovelDetailPage({ params }: NovelDetailPageProps) 
               >
                 <Database className="h-4 w-4" />
                 Entity Explorer
+              </Link>
+              <Link
+                href={`/novels/${novel.id}/content-planner`}
+                className="inline-flex h-10 items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 text-sm font-semibold text-amber-800 hover:border-amber-500 hover:bg-amber-100"
+              >
+                <KanbanSquare className="h-4 w-4" />
+                Content Planner
               </Link>
               <Link
                 href={`/novels/${novel.id}/script-generator`}
