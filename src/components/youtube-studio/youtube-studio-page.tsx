@@ -29,7 +29,7 @@ export function YouTubeStudioPage({ novelId, initialVideos }: { novelId: string;
         setMsg(ok);
         await refresh();
       } catch (error) {
-        setMsg(error instanceof Error ? error.message : "C? l?i");
+        setMsg(error instanceof Error ? error.message : "Có lỗi");
       }
     });
   }
@@ -66,7 +66,7 @@ export function YouTubeStudioTabs({ value, onChange }: { value: string; onChange
 function SelectVideo({ videos, value, onChange }: { videos: YouTubeVideo[]; value: string; onChange: (value: string) => void }) {
   return (
     <select className="h-10 rounded-md border border-line px-3 text-sm" value={value} onChange={(event) => onChange(event.target.value)}>
-      <option value="">Ch?n YouTube video</option>
+      <option value="">Chọn YouTube video</option>
       {videos.map((video) => (
         <option key={video.id} value={video.id}>{video.title} ({video.video_format})</option>
       ))}
@@ -80,7 +80,7 @@ export function LongFormGeneratorPanel({ novelId, run }: { novelId: string; run:
   return (
     <Panel title="YouTube Long-form Generator" icon={PlaySquare}>
       <LongFormInputForm topic={topic} setTopic={setTopic} minutes={minutes} setMinutes={setMinutes} />
-      <button onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/generate-long-form`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ topic, video_type: "lore_explainer", duration_target_minutes: minutes, audience_level: "newbie", tone: "mysterious", style: "cinematic_narration", structure_type: "lore_analysis" }) }).then((response) => response.json()), "?? t?o long-form YouTube.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white">
+      <button onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/generate-long-form`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ topic, video_type: "lore_explainer", duration_target_minutes: minutes, audience_level: "newbie", tone: "mysterious", style: "cinematic_narration", structure_type: "lore_analysis" }) }).then((response) => response.json()), "Đã tạo long-form YouTube.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white">
         Generate Long-form
       </button>
     </Panel>
@@ -90,9 +90,9 @@ export function LongFormGeneratorPanel({ novelId, run }: { novelId: string; run:
 export function LongFormInputForm({ topic, setTopic, minutes, setMinutes }: any) {
   return (
     <div className="grid gap-3 md:grid-cols-[1fr_150px]">
-      <input className="h-10 rounded-md border border-line px-3 text-sm" placeholder="Ch? ?? video d?i..." value={topic} onChange={(event) => setTopic(event.target.value)} />
+      <input className="h-10 rounded-md border border-line px-3 text-sm" placeholder="Chủ đề video dài..." value={topic} onChange={(event) => setTopic(event.target.value)} />
       <select className="h-10 rounded-md border border-line px-3 text-sm" value={minutes} onChange={(event) => setMinutes(Number(event.target.value))}>
-        {[5, 8, 10, 15, 20].map((minute) => <option key={minute} value={minute}>{minute} ph?t</option>)}
+        {[5, 8, 10, 15, 20].map((minute) => <option key={minute} value={minute}>{minute} phút</option>)}
       </select>
     </div>
   );
@@ -104,10 +104,10 @@ export function YouTubeShortsGeneratorPanel({ novelId, videos, run }: { novelId:
   return (
     <Panel title="YouTube Shorts Generator" icon={SplitSquareVertical}>
       <div className="grid gap-3 lg:grid-cols-[1fr_320px]">
-        <input className="h-10 w-full rounded-md border border-line px-3 text-sm" placeholder="Ch? ?? Shorts..." value={topic} onChange={(event) => setTopic(event.target.value)} />
+        <input className="h-10 w-full rounded-md border border-line px-3 text-sm" placeholder="Chủ đề Shorts..." value={topic} onChange={(event) => setTopic(event.target.value)} />
         <SelectVideo videos={videos} value={script} onChange={setScript} />
       </div>
-      <button onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/generate-short`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ topic, selected_script_id: script || null, duration_seconds: 60, tone: "fast_viral", visual_style_preset: "xianxia_cinematic" }) }).then((response) => response.json()), "?? t?o YouTube Shorts.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white">
+      <button onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/generate-short`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ topic, selected_script_id: script || null, duration_seconds: 60, tone: "fast_viral", visual_style_preset: "xianxia_cinematic" }) }).then((response) => response.json()), "Đã tạo YouTube Shorts.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white">
         Generate Short
       </button>
     </Panel>
@@ -116,33 +116,33 @@ export function YouTubeShortsGeneratorPanel({ novelId, videos, run }: { novelId:
 
 export function RepurposeLongFormPanel({ novelId, videos, run }: { novelId: string; videos: YouTubeVideo[]; run: RunFn }) {
   const [id, setId] = useState("");
-  return <Panel title="Repurpose Long-form to Shorts" icon={SplitSquareVertical}><SelectVideo videos={videos.filter((video) => video.video_format === "long_form")} value={id} onChange={setId} /><button disabled={!id} onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/${id}/repurpose-to-shorts`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ number_of_shorts: 8, duration_seconds: 60, strategy: "mixed" }) }).then((response) => response.json()), "?? t?o shorts cutdowns.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white disabled:bg-zinc-300">Generate Shorts</button></Panel>;
+  return <Panel title="Repurpose Long-form to Shorts" icon={SplitSquareVertical}><SelectVideo videos={videos.filter((video) => video.video_format === "long_form")} value={id} onChange={setId} /><button disabled={!id} onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/${id}/repurpose-to-shorts`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ number_of_shorts: 8, duration_seconds: 60, strategy: "mixed" }) }).then((response) => response.json()), "Đã tạo shorts cutdowns.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white disabled:bg-zinc-300">Generate Shorts</button></Panel>;
 }
 
 export function YouTubeSeoPackagePanel({ novelId, videos, run }: { novelId: string; videos: YouTubeVideo[]; run: RunFn }) {
   const [id, setId] = useState("");
-  return <Panel title="SEO Package" icon={Search}><SelectVideo videos={videos} value={id} onChange={setId} /><button disabled={!id} onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/${id}/seo/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title_style: "seo_balanced", description_style: "analysis" }) }).then((response) => response.json()), "?? t?o SEO package.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white disabled:bg-zinc-300">Generate SEO</button></Panel>;
+  return <Panel title="SEO Package" icon={Search}><SelectVideo videos={videos} value={id} onChange={setId} /><button disabled={!id} onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/${id}/seo/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title_style: "seo_balanced", description_style: "analysis" }) }).then((response) => response.json()), "Đã tạo SEO package.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white disabled:bg-zinc-300">Generate SEO</button></Panel>;
 }
 
 export function ThumbnailStudioPanel({ novelId, videos, run }: { novelId: string; videos: YouTubeVideo[]; run: RunFn }) {
   const [id, setId] = useState("");
-  return <Panel title="Thumbnail Studio" icon={ImageIcon}><SelectVideo videos={videos} value={id} onChange={setId} /><button disabled={!id} onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/${id}/thumbnails/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ thumbnail_style: "dramatic_character", emotion_angle: "mystery", visual_style_preset: "xianxia_cinematic" }) }).then((response) => response.json()), "?? t?o thumbnail concepts.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white disabled:bg-zinc-300">Generate Thumbnails</button></Panel>;
+  return <Panel title="Thumbnail Studio" icon={ImageIcon}><SelectVideo videos={videos} value={id} onChange={setId} /><button disabled={!id} onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/${id}/thumbnails/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ thumbnail_style: "dramatic_character", emotion_angle: "mystery", visual_style_preset: "xianxia_cinematic" }) }).then((response) => response.json()), "Đã tạo thumbnail concepts.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white disabled:bg-zinc-300">Generate Thumbnails</button></Panel>;
 }
 
 export function PlaylistPlannerPanel({ novelId, run }: { novelId: string; run: RunFn }) {
-  return <Panel title="Playlist Planner" icon={ListVideo}><button onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/playlists/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ playlist_type: "lore_playlist", number_of_videos: 10, target_audience: "newbie", order_strategy: "beginner_to_advanced" }) }).then((response) => response.json()), "?? t?o playlist.")} className="h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white">Generate Playlist</button></Panel>;
+  return <Panel title="Playlist Planner" icon={ListVideo}><button onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/playlists/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ playlist_type: "lore_playlist", number_of_videos: 10, target_audience: "newbie", order_strategy: "beginner_to_advanced" }) }).then((response) => response.json()), "Đã tạo playlist.")} className="h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white">Generate Playlist</button></Panel>;
 }
 
 export function YouTubeUploadChecklistPanel({ novelId, videos, run }: { novelId: string; videos: YouTubeVideo[]; run: RunFn }) {
   const [id, setId] = useState("");
-  return <Panel title="Upload Checklist" icon={Upload}><SelectVideo videos={videos} value={id} onChange={setId} /><button disabled={!id} onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/${id}/upload-checklist/generate`, { method: "POST" }).then((response) => response.json()), "?? t?o upload checklist.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white disabled:bg-zinc-300">Generate Checklist</button></Panel>;
+  return <Panel title="Upload Checklist" icon={Upload}><SelectVideo videos={videos} value={id} onChange={setId} /><button disabled={!id} onClick={() => run(() => fetch(`/api/novels/${novelId}/youtube/videos/${id}/upload-checklist/generate`, { method: "POST" }).then((response) => response.json()), "Đã tạo upload checklist.")} className="mt-3 h-10 rounded-md bg-jade-700 px-3 text-sm font-semibold text-white disabled:bg-zinc-300">Generate Checklist</button></Panel>;
 }
 
 function YouTubeVideoList({ videos }: { videos: YouTubeVideo[] }) {
   return (
     <section className="grid gap-4">
       {videos.map((video) => <YouTubeVideoCard key={video.id} video={video} />)}
-      {!videos.length ? <EmptyState text="Ch?a c? video YouTube." /> : null}
+      {!videos.length ? <EmptyState text="Chưa có video YouTube." /> : null}
     </section>
   );
 }
@@ -157,12 +157,12 @@ function YouTubeVideoCard({ video }: { video: YouTubeVideo }) {
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-ink">{video.title}</h3>
-          <p className="mt-1 text-sm text-zinc-500">{video.video_format} ? {video.video_type} ? fact {video.fact_check_status} ? visual {video.visual_check_status}</p>
+          <p className="mt-1 text-sm text-zinc-500">{video.video_format} · {video.video_type} · fact {video.fact_check_status} · visual {video.visual_check_status}</p>
           {video.hook ? <p className="mt-2 text-sm text-zinc-700">{video.hook}</p> : null}
         </div>
         <div className="flex flex-wrap gap-2">
           <CopyButton label="Copy package" value={fullExport} />
-          <button onClick={() => setOpen((value) => !value)} className="h-9 rounded-md border border-line px-3 text-sm font-semibold text-ink hover:border-jade-700 hover:text-jade-700">{open ? "Thu g?n" : "Xem prompt"}</button>
+          <button onClick={() => setOpen((value) => !value)} className="h-9 rounded-md border border-line px-3 text-sm font-semibold text-ink hover:border-jade-700 hover:text-jade-700">{open ? "Thu gọn" : "Xem prompt"}</button>
         </div>
       </div>
 
@@ -217,7 +217,7 @@ function CopyButton({ label, value }: { label: string; value: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <button onClick={async () => { await navigator.clipboard.writeText(value || ""); setCopied(true); window.setTimeout(() => setCopied(false), 1200); }} className="inline-flex h-8 items-center gap-1 rounded-md border border-line px-2 text-xs font-semibold text-zinc-700 hover:border-jade-700 hover:text-jade-700">
-      <Clipboard className="h-3.5 w-3.5" /> {copied ? "?? copy" : label}
+      <Clipboard className="h-3.5 w-3.5" /> {copied ? "Đã copy" : label}
     </button>
   );
 }
@@ -293,6 +293,6 @@ export function ChecklistStatusBadge() { return null; }
 export function SourceReferenceList() { return null; }
 export function WarningBox() { return null; }
 export function ExportButton() { return null; }
-function LoadingState() { return <div className="rounded-md bg-zinc-50 p-3 text-sm text-zinc-600"><Loader2 className="mr-2 inline h-4 w-4 animate-spin" />?ang x? l?...</div>; }
+function LoadingState() { return <div className="rounded-md bg-zinc-50 p-3 text-sm text-zinc-600"><Loader2 className="mr-2 inline h-4 w-4 animate-spin" />Đang xử lý...</div>; }
 function EmptyState({ text }: { text: string }) { return <div className="rounded-lg border border-dashed border-line bg-white p-8 text-center text-sm text-zinc-500">{text}</div>; }
 export function ErrorState() { return null; }
