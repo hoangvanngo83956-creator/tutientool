@@ -24,3 +24,7 @@ next-env.d.ts
 # local samples/cache
 .DS_Store
 Thumbs.db
+
+# local sqlite database
+data/*.db
+data/*.db-*
