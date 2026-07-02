@@ -1,4 +1,4 @@
-﻿import { createJsonChatCompletion } from "@/lib/ai/openaiClient";
+﻿import { createJsonChatCompletion, parseAIJson } from "@/lib/ai/openaiClient";
 import { buildExtractEntitiesPrompt } from "@/lib/ai/prompts/extractEntitiesPrompt";
 import { ENTITY_TYPES, RELATIONSHIP_TYPES, type EntityType, type ExtractEntitiesResult } from "@/lib/module3-types";
 
@@ -7,16 +7,9 @@ type AIChunk = { id: string; chapter_number: number; chunk_index: number; conten
 export async function extractEntitiesWithAI(input: { novelTitle: string; chunks: AIChunk[]; entityTypes: EntityType[] | "all" }): Promise<ExtractEntitiesResult> {
   const prompt = buildExtractEntitiesPrompt(input);
   const content = await createJsonChatCompletion({ prompt });
-  return validateExtractEntitiesResult(parseJson(content));
+  return validateExtractEntitiesResult(parseAIJson(content, "AI returned invalid JSON format."));
 }
 
-function parseJson(value: string) {
-  try {
-    return JSON.parse(value);
-  } catch {
-    throw new Error("AI trả về JSON sai format.");
-  }
-}
 
 function validateExtractEntitiesResult(value: unknown): ExtractEntitiesResult {
   if (!value || typeof value !== "object") throw new Error("AI output không phải object JSON.");

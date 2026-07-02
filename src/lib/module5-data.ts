@@ -1,6 +1,6 @@
 ﻿import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getNovelWithChapters } from "@/lib/data";
-import { createJsonChatCompletion } from "@/lib/ai/openaiClient";
+import { createJsonChatCompletion, parseAIJson } from "@/lib/ai/openaiClient";
 import { buildGenerateContentSeriesPrompt } from "@/lib/ai/prompts/generateContentSeriesPrompt";
 import { buildGenerateVideoIdeasPrompt } from "@/lib/ai/prompts/generateVideoIdeasPrompt";
 import { buildGenerateContentCalendarPrompt } from "@/lib/ai/prompts/generateContentCalendarPrompt";
@@ -124,5 +124,14 @@ export async function getIdea(novelId: string, id: string) { const { data, error
 function normalizeSeries(novelId: string, raw: any) { return { novel_id: novelId, title: String(raw.title || "Untitled series"), description: raw.description || raw.reason_why_this_series_works || null, series_type: SERIES_TYPES.includes(raw.series_type) ? raw.series_type : "custom_series", target_audience: ["newbie", "familiar_with_story", "hardcore_fan"].includes(raw.target_audience) ? raw.target_audience : "newbie", tone: raw.tone || "mysterious", style: raw.style || "tiktok_viral", total_planned_videos: Number(raw.suggested_video_count || raw.total_planned_videos || 10), status: SERIES_STATUSES.includes(raw.status) ? raw.status : "draft" }; }
 function normalizeIdea(novelId: string, raw: any) { const refs = Array.isArray(raw.source_references) ? raw.source_references : Array.isArray(raw.source_references_json) ? raw.source_references_json : []; const warnings = Array.isArray(raw.warning_notes) ? raw.warning_notes : Array.isArray(raw.warning_notes_json) ? raw.warning_notes_json : []; const evidenceScore = clampScore(raw.evidence_strength_score); return { novel_id: novelId, series_id: raw.series_id || null, title: String(raw.title || "Untitled idea"), topic: String(raw.topic || raw.title || ""), video_type: IDEA_VIDEO_TYPES.includes(raw.video_type) ? raw.video_type : "custom", suggested_duration_seconds: Number(raw.suggested_duration_seconds || raw.duration_seconds || 60), hook_angle: raw.hook_angle || null, content_summary: raw.content_summary || null, related_entity_ids_json: (raw.related_entities || []).map((e: any) => e.entity_id).filter(Boolean), related_research_note_ids_json: raw.related_research_note_ids_json || [], related_report_ids_json: raw.related_report_ids_json || [], source_references_json: refs, priority_score: clampScore(raw.priority_score), viral_score: clampScore(raw.viral_score), originality_score: clampScore(raw.originality_score), evidence_strength_score: evidenceScore, warning_notes_json: evidenceScore < 5 && warnings.length === 0 ? ["Không đủ dữ kiện trong nguyên tác"] : warnings, status: IDEA_STATUSES.includes(raw.status) ? raw.status : "idea" }; }
 function clampScore(value: any) { const n = Number(value); return Math.max(1, Math.min(10, Number.isFinite(n) ? Math.round(n) : 5)); }
-function parseJson(value: string) { try { return JSON.parse(value); } catch { throw new Error("AI trả về JSON sai format."); } }
-function defaultTasks() { return ["Research check", "Generate script", "Fact check script", "Generate image prompts", "Generate video prompts", "Create voice-over", "Generate visuals", "Edit video", "Add subtitles", "Prepare caption", "Final review", "Publish"].map((task_title, index) => ({ task_title, task_type: ["research","script","review","image_generation","video_generation","voice_over","video_generation","editing","subtitle","caption","review","posting"][index], status: "todo" })); }
+function parseJson(value: string): any { return parseAIJson(value, "AI returned invalid JSON format.") as any; }
+
+function defaultTasks() {
+  return [
+    { task_title: "Kiem tra source references", task_type: "research", status: "todo" },
+    { task_title: "Chuan bi voice-over", task_type: "voice_over", status: "todo" },
+    { task_title: "Tao visual prompts", task_type: "asset_generation", status: "todo" },
+    { task_title: "Dung video", task_type: "editing", status: "todo" },
+    { task_title: "Kiem tra truoc khi dang", task_type: "review", status: "todo" }
+  ];
+}

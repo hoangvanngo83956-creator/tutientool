@@ -1,4 +1,4 @@
-﻿import OpenAI from "openai";
+import OpenAI from "openai";
 
 type ChatJsonOptions = {
   system?: string;
@@ -16,8 +16,8 @@ export function getOpenAIClient() {
   if (!apiKey) {
     throw new Error(
       provider === "deepseek"
-        ? "Thiếu DEEPSEEK_API_KEY. Hãy thêm key vào .env.local để chạy AI Research."
-        : "Thiếu OPENAI_API_KEY. Hãy thêm key vào .env.local để chạy AI Research."
+        ? "Thieu DEEPSEEK_API_KEY. Hay them key vao .env.local de chay AI Research."
+        : "Thieu OPENAI_API_KEY. Hay them key vao .env.local de chay AI Research."
     );
   }
 
@@ -37,10 +37,13 @@ export function getAIModel() {
 
 export async function createJsonChatCompletion({ system, prompt }: ChatJsonOptions) {
   const client = getOpenAIClient();
+  const jsonOnlySystem = "Return only valid JSON. Do not wrap the response in markdown fences. Do not add explanations outside JSON.";
   const response = await client.chat.completions.create({
     model: getAIModel(),
     messages: [
-      ...(system ? [{ role: "system" as const, content: system }] : []),
+      { role: "system" as const, content: system ? `${jsonOnlySystem}
+
+${system}` : jsonOnlySystem },
       { role: "user" as const, content: prompt }
     ],
     response_format: { type: "json_object" },
@@ -49,8 +52,40 @@ export async function createJsonChatCompletion({ system, prompt }: ChatJsonOptio
 
   const content = response.choices[0]?.message?.content;
   if (!content) {
-    throw new Error("AI không trả về nội dung JSON.");
+    throw new Error("AI did not return JSON content.");
   }
 
   return content;
+}
+
+export function parseAIJson<T = unknown>(value: string, errorMessage = "AI returned invalid JSON format."): T {
+  const jsonText = extractJsonText(value);
+
+  try {
+    return JSON.parse(jsonText) as T;
+  } catch {
+    throw new Error(errorMessage);
+  }
+}
+
+export function extractJsonText(value: string) {
+  const text = value.trim();
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenced?.[1]) {
+    return fenced[1].trim();
+  }
+
+  const firstObject = text.indexOf("{");
+  const firstArray = text.indexOf("[");
+  const starts = [firstObject, firstArray].filter((index) => index >= 0);
+  if (!starts.length) {
+    return text;
+  }
+
+  const start = Math.min(...starts);
+  const opener = text[start];
+  const closer = opener === "{" ? "}" : "]";
+  const end = text.lastIndexOf(closer);
+
+  return end > start ? text.slice(start, end + 1).trim() : text;
 }

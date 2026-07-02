@@ -1,4 +1,4 @@
-﻿import { createJsonChatCompletion } from "@/lib/ai/openaiClient";
+﻿import { createJsonChatCompletion, parseAIJson } from "@/lib/ai/openaiClient";
 import { buildGenerateTikTokScriptPrompt } from "@/lib/ai/prompts/generateTikTokScriptPrompt";
 import { enhanceSceneVisualPrompts } from "@/lib/ai/script-generator/visualPromptValidator";
 import { SCRIPT_DURATIONS, SCRIPT_STYLES, SCRIPT_TONES, VIDEO_TYPES, type GeneratedScriptPayload, type ScriptEvidenceBundle, type ScriptGeneratorInput } from "@/lib/module4-types";
@@ -6,12 +6,9 @@ import { SCRIPT_DURATIONS, SCRIPT_STYLES, SCRIPT_TONES, VIDEO_TYPES, type Genera
 export async function generateTikTokScript(input: ScriptGeneratorInput & { evidence: ScriptEvidenceBundle }): Promise<GeneratedScriptPayload> {
   const prompt = buildGenerateTikTokScriptPrompt(input);
   const content = await createJsonChatCompletion({ prompt });
-  return validateGeneratedScript(parseJson(content), input);
+  return validateGeneratedScript(parseAIJson(content, "Script generator returned invalid JSON format."), input);
 }
 
-function parseJson(value: string) {
-  try { return JSON.parse(value); } catch { throw new Error("AI trả về JSON sai format khi tạo kịch bản."); }
-}
 
 function validateGeneratedScript(value: unknown, input: ScriptGeneratorInput & { evidence: ScriptEvidenceBundle }): GeneratedScriptPayload {
   if (!value || typeof value !== "object") throw new Error("Script output không phải object JSON.");

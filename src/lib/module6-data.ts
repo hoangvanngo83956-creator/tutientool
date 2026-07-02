@@ -1,6 +1,6 @@
 ﻿import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getPlannerContext } from "@/lib/module5-data";
-import { createJsonChatCompletion } from "@/lib/ai/openaiClient";
+import { createJsonChatCompletion, parseAIJson } from "@/lib/ai/openaiClient";
 import { buildGenerateYouTubeLongFormPrompt } from "@/lib/ai/prompts/youtube/generateYouTubeLongFormPrompt";
 import { buildGenerateYouTubeShortPrompt } from "@/lib/ai/prompts/youtube/generateYouTubeShortPrompt";
 import { buildGenerateYouTubeSeoPackagePrompt } from "@/lib/ai/prompts/youtube/generateYouTubeSeoPackagePrompt";
@@ -40,5 +40,5 @@ export async function listChecklists(novelId:string,videoId:string){const{data,e
 
 export async function patchYoutubeTable(table:string,novelId:string,id:string,patch:any){await getSupabaseServerClient().from(table).update({...patch,updated_at:new Date().toISOString()}).eq("novel_id",novelId).eq("id",id).throwOnError();}
 export async function deleteYoutubeRow(table:string,novelId:string,id:string){await getSupabaseServerClient().from(table).delete().eq("novel_id",novelId).eq("id",id).throwOnError();}
-function parseJson(v:string){try{return JSON.parse(v)}catch{throw new Error("AI trả JSON sai format")}}
+function parseJson(value:string): any {return parseAIJson(value,"AI returned invalid JSON format") as any}
 function clamp(v:any){const n=Number(v);return Math.max(1,Math.min(10,Number.isFinite(n)?Math.round(n):5))}
